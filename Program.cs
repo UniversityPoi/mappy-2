@@ -9,13 +9,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<AccidentService>();
-
-builder.Services.AddDbContext<DefaultDbContext>(options => {
+builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AccidentService>();
 
 // JWT Configuration
 builder.Services.AddJwt(builder.Configuration);

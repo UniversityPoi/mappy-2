@@ -6,9 +6,9 @@ namespace Mappy.Services;
 
 public class AccidentService
 {
-	private readonly DefaultDbContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public AccidentService(DefaultDbContext dbContext)
+	public AccidentService(ApplicationDbContext dbContext)
 	{
 		_db = dbContext;
 	}

@@ -6,9 +6,9 @@ namespace Mappy.Services;
 
 public class UserService
 {
-  private readonly DefaultDbContext _db;
+  private readonly ApplicationDbContext _db;
 
-  public UserService(DefaultDbContext dbContext)
+  public UserService(ApplicationDbContext dbContext)
   {
     _db = dbContext;
   }
