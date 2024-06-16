@@ -30,7 +30,9 @@ public class AccidentController : ControllerBase
 
     var result = await _service.GetAllAsync();
 
-    return Ok(result);
+    var recentAccidents = result.Where(accident => accident.Date >= DateTime.Now.AddDays(-7));
+
+    return Ok(recentAccidents);
   }
 
   [HttpPost("")]
