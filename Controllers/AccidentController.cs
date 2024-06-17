@@ -47,14 +47,14 @@ public class AccidentController : ControllerBase
       return BadRequest(new { message = "Cannot get the Id of the user..." });
     }
 
-    var user = await _userService.GetAsync(id);
+    var user = await _userService.GetAsync(new Guid(id));
 
     if (user.LastReportedAccidentDate != default && 
       user.LastReportedAccidentDate >= DateTime.Now.AddMinutes(-5)) {
         return BadRequest(new { message = "You can report only one accident every 5 minutes!" });
     }
 
-    await _userService.UpdateLastReportedAccidentDate(user.Id);
+    await _userService.UpdateLastReportedAccidentDate(new Guid(id));
 
     var result = await _accidentService.AddAsync(new AccidentModel
       {
