@@ -11,11 +11,13 @@ namespace Mappy.Controllers;
 [Route("[controller]")]
 public class AccidentController : ControllerBase
 {
-  private readonly AccidentService _service;
+  private readonly AccidentService _accidentService;
+  private readonly UserService _userService;
 
-  public AccidentController(AccidentService service)
+  public AccidentController(AccidentService service, UserService userService)
   {
-      _service = service;
+      _accidentService = service;
+      _userService = userService;
   }
 
   [HttpGet("")]
@@ -28,7 +30,7 @@ public class AccidentController : ControllerBase
       return BadRequest(new { message = "Cannot get the Id of the user..." });
     }
 
-    var result = await _service.GetAllAsync();
+    var result = await _accidentService.GetAllAsync();
 
     var recentAccidents = result.Where(accident => accident.Date >= DateTime.Now.AddDays(-7));
 
@@ -45,7 +47,16 @@ public class AccidentController : ControllerBase
       return BadRequest(new { message = "Cannot get the Id of the user..." });
     }
 
-    var result = await _service.AddAsync(new AccidentModel
+    var user = await _userService.GetAsync(id);
+
+    if (user.LastReportedAccidentDate != default && 
+      user.LastReportedAccidentDate >= DateTime.Now.AddMinutes(-5)) {
+        return BadRequest(new { message = "You can report only one accident every 5 minutes!" });
+    }
+
+    await _userService.UpdateLastReportedAccidentDate(user.Id);
+
+    var result = await _accidentService.AddAsync(new AccidentModel
       {
         UserId = new Guid(id),
         Latitude = coordinates.Latitude,

@@ -16,5 +16,7 @@ namespace Mappy.Models
 
         [Required]
         public string? Password { get; set; }
+
+        public DateTime LastReportedAccidentDate { get; set; }
     }
 }

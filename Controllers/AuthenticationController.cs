@@ -11,13 +11,13 @@ namespace Mappy.Controllers;
 [Route("auth")]
 public class AuthenticationController : ControllerBase
 {
-  private readonly UserService _service;
+  private readonly UserService _userService;
   private readonly JwtConfigurationModel _jwtBearerTokenSettings;
 
   public AuthenticationController(IOptions<JwtConfigurationModel> jwtTokenOptions, 
     UserService userService)
   {
-    _service = userService;
+    _userService = userService;
     _jwtBearerTokenSettings = jwtTokenOptions.Value;
   }
 
@@ -29,12 +29,12 @@ public class AuthenticationController : ControllerBase
       return new BadRequestObjectResult(new { message = "Passwords do not match!" });
     }
 
-    if (await _service.ExistByEmail(model.Email))
+    if (await _userService.ExistByEmail(model.Email))
     {
       return BadRequest(new { message = $"User with email {model.Email} already exist!" });
     }
 
-    var result = await _service.AddAsync(
+    var result = await _userService.AddAsync(
       new UserModel {
         Username = model.UserName,
         Email = model.Email,
@@ -53,7 +53,7 @@ public class AuthenticationController : ControllerBase
   [HttpPost("login")]
   public async Task<IActionResult> Login([FromBody] LoginUserModel model)
   {
-    var user = await _service.GetAsync(model.Email);
+    var user = await _userService.GetAsync(model.Email);
 
     if (user is null)
     {
